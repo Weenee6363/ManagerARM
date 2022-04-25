@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание заявки</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/request/info}" th:object="${client}">
+    <div>
+        <label for="full_name">ФИО</label>
+        <input type="text" th:field="*{fullName}" id="full_name"/>
+        <br/>
+
+        <label for="passport_details">Паспортные данные</label>
+        <input type="text" th:field="*{passportDetails}" id="passport_details"/>
+        <br/>
+
+        <label for="marital_status">Семейное положение</label>
+        <input type="text" th:field="*{maritalStatus}" id="marital_status"/>
+        <br/>
+
+        <label for="registration_address">Адрес регистрации</label>
+        <input type="text" th:field="*{registrationAddress}" id="registration_address"/>
+        <br/>
+
+        <label for="phone_number">Номер телефона</label>
+        <input type="text" th:field="*{phoneNumber}" id="phone_number"/>
+        <br/>
+
+        <label for="employment_information">Место работы</label>
+        <input type="text" th:field="*{employmentInformation}" id="employment_information"/>
+        <br/>
+
+        <label for="credit_amount">Сумма кредита</label>
+        <input type="text" name="creditAmount" id="credit_amount"/>
+        <br/>
+
+        <input type="submit" value="Отправить запрос"/>
+    </div>
+
+</form>
+
+</body>
+</html>

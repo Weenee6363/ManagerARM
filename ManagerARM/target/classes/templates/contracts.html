@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Подписанные договоры</title>
+</head>
+<body>
+<div th:each="contract : ${contracts}">
+    <p th:text="${contract.getRequest().getClient().getFullName()}"></p>
+    <p th:text="${contract.getRequest().getCreditAmount()}"></p>
+    <p th:text="${contract.getSigningDate()}"></p>
+    <br/>
+</div>
+</body>
+</html>

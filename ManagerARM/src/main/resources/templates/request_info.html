@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявка</title>
+</head>
+<body>
+<h2>Заявка одобрена</h2>
+
+<div>ФИО</div>
+<div th:text="${request.getClient().getFullName()}">VALUE</div>
+<br/>
+
+<div>Паспортные данные</div>
+<div th:text="${request.getClient().getPassportDetails()}">VALUE</div>
+<br/>
+
+<div>Семейное положение</div>
+<div th:text="${request.getClient().getMaritalStatus()}">VALUE</div>
+<br/>
+
+<div>Адрес прописки</div>
+<div th:text="${request.getClient().getRegistrationAddress()}">VALUE</div>
+<br/>
+
+<div>Номер телефона</div>
+<div th:text="${request.getClient().getPhoneNumber()}">VALUE</div>
+<br/>
+
+<div>Место работы</div>
+<div th:text="${request.getClient().getEmploymentInformation()}">VALUE</div>
+<br/>
+
+<div>Сумма кредита</div>
+<div th:text="${request.getCreditAmount()}">VALUE</div>
+<br/>
+
+<div>Срок кредита в днях</div>
+<div th:text="${request.getPeriod()}">VALUE</div>
+<br/>
+
+<form th:method="patch" th:action="@{/contract/{id}(id=${contractId})}">
+    <input type="submit" value="Подписать договор"/>
+</form>
+</body>
+</html>
