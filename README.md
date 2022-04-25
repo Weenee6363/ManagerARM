@@ -1,1 +1,5 @@
-# ManagerARM
+/request/new - создание заявки и последующее одобрение и подписание.
+/clients - список всех клиентов
+/signed_contracts - список подписанных договоров
+/approved_requests - список одобренных заявок
+client?name=...&passportDetails=...&number=... - поиск клиента по имени, паспорту и номеру телефона.
