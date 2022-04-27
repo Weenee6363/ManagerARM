@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск клиента</title>
+</head>
+<body>
+<h2>Поиск Клиента</h2>
+<form th:method="GET" th:action="@{/client}">
+    <div>
+        <label for="fullName">ФИО</label>
+        <input type="text" th:name="name" id="fullName"/>
+        <br/>
+
+        <label for="passport_details">Паспортные данные</label>
+        <input type="text" th:name="passport" id="passport_details"/>
+        <br/>
+
+        <label for="phone_number">Номер телефона</label>
+        <input type="text" th:name="number" id="phone_number"/>
+        <br/>
+
+        <input type="submit" value="Отправить запрос"/>
+    </div>
+
+</form>
+</body>
+</html>

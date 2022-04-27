@@ -1,17 +1,17 @@
 package main;
 
+import main.dao.ContractDAO;
+import main.dao.RequestDAO;
 import main.models.Contract;
 import main.models.Request;
 import main.models.RequestStatus;
-import main.repositories.ContractRepository;
-import main.repositories.RequestRepository;
 
 //Служба принятия решения по кредиту
 public class AnalyticsService
 {
     public static int makeDecision(Request request,
-                                   RequestRepository requestRepository,
-                                   ContractRepository contractRepository)
+                                   RequestDAO requestDAO,
+                                   ContractDAO contractDAO)
     {
         int contractId = 0;
         int random = (int) Math.ceil(Math.random() * 2);
@@ -19,19 +19,19 @@ public class AnalyticsService
             case (1):
                 request.setRequestStatus(RequestStatus.APPROVED);
                 request.setPeriod(getPeriod());
-                request = requestRepository.save(request);
+                requestDAO.addRequest(request);
 
                 //При одобрении кредита, автоматически создаётся договор
                 Contract contract = new Contract();
                 contract.setRequest(request);
                 contract.setSigningStatus(false);
-                contract = contractRepository.save(contract);
+                contractDAO.addContract(contract);
                 contractId = contract.getId();
                 break;
 
             default:
                 request.setRequestStatus(RequestStatus.DISAPPROVED);
-                request = requestRepository.save(request);
+                requestDAO.addRequest(request);
                 break;
         }
         return contractId;

@@ -1,34 +1,34 @@
 package main.controllers;
 
 import main.AnalyticsService;
+import main.dao.ClientDAO;
+import main.dao.ContractDAO;
+import main.dao.RequestDAO;
 import main.models.Client;
 import main.models.Contract;
 import main.models.Request;
 import main.models.RequestStatus;
-import main.repositories.ClientRepository;
-import main.repositories.ContractRepository;
-import main.repositories.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Controller
 public class ViewController
 {
+    @Autowired
+    private ClientDAO clientDAO;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ContractDAO contractDAO;
 
     @Autowired
-    private ContractRepository contractRepository;
+    private RequestDAO requestDAO;
 
-    @Autowired
-    private RequestRepository requestRepository;
 
     //Форма создания заявки
     @GetMapping("/request/new")
@@ -46,20 +46,21 @@ public class ViewController
         //Если клиент с таким именем и паспортными данными уже есть в бд,
         //то, обновим его данные (номер телефона, адрес и т.п.)
 
-        Optional<Client> clientOptional = clientRepository.findFirstByFullNameAndPassportDetails(
+        Client clientOptional = clientDAO.findClientByNameAndPassport(
                 client.getFullName(),
                 client.getPassportDetails());
 
-        if(clientOptional.isPresent())
+        if(clientOptional != null)
         {
-            Client actualClient=clientOptional.get();
-
             //Выставляем ID клента, найденного в базе, для клиента, полученного из заявки,
             //чтобы не создавать нового, а обновить старого
-            client.setId(actualClient.getId());
+            client.setId(clientOptional.getId());
+            clientDAO.updateClient(client);
         }
-
-        clientRepository.save(client);
+        else
+        {
+            clientDAO.addClient(client);
+        }
 
         Request request = new Request();
         request.setClient(client);
@@ -67,7 +68,7 @@ public class ViewController
 
         //Отправляем заявку на рассмотрение,
         // если заявка будет одобрена, получим id договора, который необходимо подписать
-        int contractId = AnalyticsService.makeDecision(request, requestRepository, contractRepository);
+        int contractId = AnalyticsService.makeDecision(request, requestDAO, contractDAO);
 
         if(contractId > 0)
         {
@@ -83,7 +84,7 @@ public class ViewController
     @GetMapping("/clients")
     public String getClients(Model model)
     {
-        Iterable<Client> clientIterable = clientRepository.findAll();
+        Iterable<Client> clientIterable = clientDAO.getAllClients();
         ArrayList<Client> clients = new ArrayList<>();
         for (Client client : clientIterable)
         {
@@ -97,7 +98,7 @@ public class ViewController
     @GetMapping("/signed_contracts")
     public String getSignedContracts(Model model)
     {
-        ArrayList<Contract> contracts = (ArrayList<Contract>) contractRepository.findBySigningStatus(true);
+        ArrayList<Contract> contracts = (ArrayList<Contract>) contractDAO.findBySigningStatus(true);
         model.addAttribute("contracts", contracts);
         return "contracts";
     }
@@ -106,8 +107,34 @@ public class ViewController
     @GetMapping("/approved_requests")
     public String getApprovedRequests(Model model)
     {
-        ArrayList<Request> requests = (ArrayList<Request>) requestRepository.findByRequestStatus(RequestStatus.APPROVED);
+        ArrayList<Request> requests = (ArrayList<Request>) requestDAO.findByRequestStatus(RequestStatus.APPROVED);
         model.addAttribute("requests", requests);
         return "requests";
+    }
+
+    //Отображаем найденного клиента или говорим, что клиент не найден
+    @GetMapping("/client")
+    public String getClient(@RequestParam("name") String fullName,
+                            @RequestParam("passport") String passportDetails,
+                            @RequestParam("number") String phoneNumber,
+                            Model model)
+    {
+        Client client = clientDAO.findClientByNameAndPassportAndPhoneNumber(fullName, passportDetails, phoneNumber);
+        if (client != null)
+        {
+            model.addAttribute("client", client);
+            return "client";
+        }
+        return "client_not_found";
+    }
+
+    //Форма для поиска клиента по имени, номеру и паспорту
+    @GetMapping("/search")
+    public String searchClient(Model model)
+    {
+        model.addAttribute("name", new String());
+        model.addAttribute("passport", new String());
+        model.addAttribute("number", new String());
+        return "search_client";
     }
 }

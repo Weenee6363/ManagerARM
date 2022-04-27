@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>ФИО</div>
+<div th:text="${client.getFullName()}">VALUE</div>
+<br/>
+
+<div>Паспортные данные</div>
+<div th:text="${client.getPassportDetails()}">VALUE</div>
+<br/>
+
+<div>Семейное положение</div>
+<div th:text="${client.getMaritalStatus()}">VALUE</div>
+<br/>
+
+<div>Адрес прописки</div>
+<div th:text="${client.getRegistrationAddress()}">VALUE</div>
+<br/>
+
+<div>Номер телефона</div>
+<div th:text="${client.getPhoneNumber()}">VALUE</div>
+<br/>
+
+<div>Место работы</div>
+<div th:text="${client.getEmploymentInformation()}">VALUE</div>
+<br/>
+</body>
+</html>
